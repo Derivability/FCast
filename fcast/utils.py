@@ -11,6 +11,7 @@ OpcodesToMessages = {
     Opcodes.playback_update: PlaybackUpdate,
     Opcodes.volume_update: VolumeUpdate,
     Opcodes.set_volume: SetVolume,
+    Opcodes.playback_error: PlaybackError,
     Opcodes.set_speed: SetSpeed,
 	Opcodes.version: Version,
     Opcodes.ping: Ping,
