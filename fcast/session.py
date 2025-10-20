@@ -14,7 +14,7 @@ class FCastSession:
 		self.port = port
 		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		
-	def _send(self, msg: Message):
+	def send(self, msg: Message):
 		l.debug(f"Sending message: {msg}")
 		self.sock.sendall(msg.as_bytes)
 
@@ -60,10 +60,10 @@ class FCastSession:
 				l.error(e)
 				continue
 			if t:=type(msg) == Ping:
-				self._send(Pong())
+				self.send(Pong())
 			elif t == Version:
-				self._send(Version(3))
+				self.send(Version(3))
 			elif t == Initial:
-				self._send(Initial())
+				self.send(Initial())
 			self._notify(msg)
 			
