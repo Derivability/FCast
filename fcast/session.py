@@ -2,6 +2,7 @@ import socket
 from .message import *
 from .utils import OpcodesToMessages
 from typing import Callable
+from threading import Lock
 import logging
 
 l = logging.getLogger(__name__)
@@ -13,6 +14,7 @@ class FCastSession:
 		self.host = host
 		self.port = port
 		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.lock = Lock()
 		
 	def send(self, msg: Message):
 		l.debug(f"Sending message: {msg}")
@@ -51,9 +53,16 @@ class FCastSession:
 
 	def connect(self):
 		self.sock.connect((self.host, self.port))
+		self.connected = True
+	
+	def disconnect(self):
+		self.connected = False
+		with self.lock:
+			self.sock.close()
 
 	def receive(self):
-		while True:
+		while self.connected:
+			self.lock.acquire()
 			try:
 				msg = self._recv()
 			except TypeError as e:
@@ -66,4 +75,4 @@ class FCastSession:
 			elif t == Initial:
 				self.send(Initial())
 			self._notify(msg)
-			
+			self.lock.release()
