@@ -112,12 +112,12 @@ class PlaybackUpdate(Message):
 
 @dataclass
 class VolumeUpdate(Message):
-	generation_time: float #The time the packet was generated (unix time milliseconds)
+	generationTime: float #The time the packet was generated (unix time milliseconds)
 	volume: float # The current volume (0-1)
 
 	def serialize(self):
 		res = {
-			"generationTime": self.generation_time,
+			"generationTime": self.generationTime,
 			"volume": self.volume
 		}
 		return json.dumps(res).encode(encoding="utf-8")
