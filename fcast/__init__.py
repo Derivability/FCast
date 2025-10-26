@@ -1,1 +1,1 @@
-from .session import FCastSession
+from .session import FCastSession, FCastSessionAsync
