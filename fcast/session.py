@@ -104,6 +104,11 @@ class FCastSessionAsync(FCastSession):
 	async def connect(self):
 		await self.loop.sock_connect(self.sock, (self.host,self.port))
 		self.connected = True
+	
+	async def disconnect(self):
+		self.connected = False
+		async with self.lock:
+			self.sock.close()
 
 	async def send(self, msg: Message):
 		l.debug(f"Sending message: {msg}")
