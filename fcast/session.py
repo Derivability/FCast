@@ -111,7 +111,7 @@ class FCastSessionAsync(FCastSession):
 
 	async def receive(self):
 		while self.connected:
-			self.lock.acquire()
+			await self.lock.acquire()
 			try:
 				msg = await self._recv()
 			except TypeError as e:
