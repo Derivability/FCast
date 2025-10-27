@@ -1,6 +1,8 @@
 # Description
 	This is best-effort python implementation of the FCast protocol by FUTO: https://gitlab.futo.org/videostreaming/fcast
 	**I'm not affiliated nor endorsed by FUTO**
+	
+	Currently only protocol version 3 is targeted
 
 # Installation
 
