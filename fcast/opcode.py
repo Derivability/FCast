@@ -1,4 +1,4 @@
-class Opcodes:
+class Opcode:
     none = 0
     play = 1
     pause = 2
@@ -16,7 +16,7 @@ class Opcodes:
     initial = 14
     play_update = 15
     set_playlist_item = 16
-    # subscribe_event = 17
-    # unsubscribe_event = 18
-    # event = 19
+    subscribe_event = 17
+    unsubscribe_event = 18
+    event = 19
 

@@ -3,6 +3,7 @@ import struct
 from enum import Enum
 from typing import Optional, Any
 import json
+from .event import Event
 
 import logging
 
@@ -26,9 +27,9 @@ class Message:
 
 	@property
 	def opcode(self):
-		from .utils import MessagesToOpcodes
-		l.debug(f"{type(self)} opcode: {MessagesToOpcodes[type(self)]}")
-		return MessagesToOpcodes[type(self)]
+		from .utils import MessageToOpcode
+		l.debug(f"{type(self)} opcode: {MessageToOpcode[type(self)]}")
+		return MessageToOpcode[type(self)]
 
 	@property
 	def header(self):
@@ -233,3 +234,8 @@ class Ping(Message):
 @dataclass
 class Pong(Message):
 	...
+
+@dataclass
+class EventM(Message):
+	generationTime: float #The time the packet was generated (unix time milliseconds)
+	event: Event

@@ -1,6 +1,6 @@
 import socket
 from .message import *
-from .utils import OpcodesToMessages
+from .utils import OpcodeToMessage
 from typing import Callable
 from threading import Lock
 import asyncio
@@ -26,7 +26,7 @@ class FCastSession:
 		resp_size = struct.unpack("<I", self.sock.recv(4))[0]
 		resp_opcode = struct.unpack("B", self.sock.recv(1))[0]
 		resp_body = self.sock.recv(resp_size-1).decode(encoding="utf-8")
-		message_type = OpcodesToMessages[resp_opcode]
+		message_type = OpcodeToMessage[resp_opcode]
 		if resp_size > 1:
 			msg = message_type(**json.loads(resp_body))
 		else:
@@ -93,7 +93,7 @@ class FCastSessionAsync(FCastSession):
 		resp_size = struct.unpack("<I", await self.loop.sock_recv(self.sock, 4))[0]
 		resp_opcode = struct.unpack("B", await self.loop.sock_recv(self.sock, 1))[0]
 		resp_body = (await self.loop.sock_recv(self.sock,resp_size-1)).decode(encoding="utf-8")
-		message_type = OpcodesToMessages[resp_opcode]
+		message_type = OpcodeToMessage[resp_opcode]
 		if resp_size > 1:
 			msg = message_type(**json.loads(resp_body))
 		else:
