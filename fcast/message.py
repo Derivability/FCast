@@ -67,10 +67,18 @@ class Play(Message):
 	
 	@metadata.setter
 	def metadata(self, value: dict):
-		self._metadata = MetadataType(
+		if type(value) == dict:
+			self._metadata = MetadataType(
 			title=value.get("title"),
 			thumbnailUrl=value.get("thumbnailUrl"),
 			custom=value.get("custom"))
+		elif isinstance(value, MetadataType) or (value is None):
+			self._metadata = value
+		elif isinstance(value, property):
+			self._metadata = None
+		else:
+			raise KeyError(f"Invalid value provided for metadata: {value}")
+		
 
 	def serialize(self):
 		res = {
