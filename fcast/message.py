@@ -251,3 +251,26 @@ class UnsubscribeEvent(SubscribeEvent):
 class EventM(Message):
 	generationTime: float #The time the packet was generated (unix time milliseconds)
 	event: Event
+
+	@property
+	def event(self) -> Event:
+		return self._event
+	
+	@event.setter
+	def event(self, value: dict|Event):
+		if type(value) == dict:
+			from .utils import TypeToEvent
+			etype = value["type"]
+			E = TypeToEvent[etype]
+			self._event = E(**value)
+		elif isinstance(value, Event):
+			self._event = value
+		else:
+			raise KeyError(f"Invalid value provided for event: {value}")
+
+	def serialize(self) -> bytes:
+		res = {
+			"generationTime": self.generationTime,
+			"event": self.event.json
+		}
+		return json.dumps(res).encode(encoding="utf-8")

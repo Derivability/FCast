@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional, Any
 from enum import Enum
+from copy import copy
 
 
 class ContentType(Enum):
@@ -27,6 +28,30 @@ class MediaItem:
 	headers: Optional[dict] = None #HTTP request headers to add to the play request Map<string, string>
 	metadata: MetadataType = None
 
+	@property
+	def metadata(self) -> MetadataType:
+		return self._metadata
+	
+	@metadata.setter
+	def metadata(self, value: dict|MetadataType):
+		if (t:=type(value)) == dict:
+			self._metadata = MetadataType(
+				title=value.get("title"),
+				thumbnailUrl=value.get("thumbnailUrl"),
+				custom=value.get("custom"))
+		elif t == MetadataType:
+			self._metadata = value
+		else:
+			raise KeyError(f"Invalid value provided for metadata: {value}")
+
+	@property
+	def json(self) -> dict:
+		res = copy(self.__dict__)
+		res.pop("_metadata")
+		res["metadata"] = self.metadata.__dict__
+		return res
+
+
 
 @dataclass
 class PlaylistContent:
@@ -38,3 +63,10 @@ class PlaylistContent:
 	forwardCache: bool = None # Count of media items should be pre-loaded forward from the current view index
 	backwardCache: bool = None # Count of media items should be pre-loaded backward from the current view index
 	metadata: MetadataType = None
+
+	@property
+	def json(self) -> dict:
+		res = copy(self.__dict__)
+		res.pop("_metadata")
+		res["metadata"] = self.metadata.__dict__
+		return res

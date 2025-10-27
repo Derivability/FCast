@@ -27,7 +27,7 @@ OpcodeToMessage = {
 MessageToOpcode = {v:k for k,v in OpcodeToMessage.items()}
 
 
-TypeToEvent = {
+TypeToEventSub = {
     EventType.MediaItemStart: MediaItemStart,
     EventType.MediaItemEnd: MediaItemEnd,
     EventType.MediaItemChange: MediaItemChange,
@@ -35,4 +35,13 @@ TypeToEvent = {
     EventType.KeyUp: KeyUp
 }
 
-EventToType = {v:k for k,v in TypeToEvent.items()}
+EventSubToType = {v:k for k,v in TypeToEventSub.items()}
+
+#Leap of faith
+TypeToEvent = {
+    EventType.MediaItemStart: MediaItemE,
+    EventType.MediaItemEnd: MediaItemE,
+    EventType.MediaItemChange: MediaItemE,
+    EventType.KeyDown: Key,
+    EventType.KeyUp: Key,
+}
