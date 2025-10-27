@@ -1,6 +1,6 @@
 [project]
 name = "libfcast"
-version = "3.2.2"
+version = "3.3.0"
 description = "FCast Python Lib"
 license = { file = "LICENSE" }
 readme = "README.md"

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import struct
 from enum import Enum
-from typing import Optional
+from typing import Optional, Any
 import json
 
 import logging
@@ -13,7 +13,7 @@ l = logging.getLogger(__name__)
 class MetadataType:
 	title: str = None
 	thumbnailUrl: str = None
-	custom = None
+	custom: Any = None
 
 class PlaybackState(Enum):
 	idle: int = 0
@@ -42,18 +42,18 @@ class Message:
 		data = self.header
 		if self.body: data += self.body
 		return data
-	
-	def serialize(self):
-		...
 
 	@property
 	def size(self):
 		return len(self.serialize())
 	
 	@property
-	def body(self):
+	def body(self) -> bytes:
 		return self.serialize()
 	
+	def serialize(self) -> bytes:
+		...
+
 
 @dataclass
 class Play(Message):
@@ -66,6 +66,17 @@ class Play(Message):
 	headers: Optional[dict] = None #HTTP request headers to add to the play request Map<string, string>
 	metadata: MetadataType = None
 
+	@property
+	def metadata(self) -> MetadataType:
+		return self._metadata
+	
+	@metadata.setter
+	def metadata(self, value: dict):
+		self._metadata = MetadataType(
+			title=value.get("title"),
+			thumbnailUrl=value.get("thumbnailUrl"),
+			custom=value.get("custom"))
+
 	def serialize(self):
 		res = {
 			"container": self.container,
@@ -76,7 +87,6 @@ class Play(Message):
 		if c:=self.content: res["content"] = c
 		if h:=self.headers: res["headers"] = h
 		if m:=self.metadata: res["metadata"] = m.__dict__
-
 		return json.dumps(res).encode(encoding="utf-8")
 
 
@@ -96,6 +106,14 @@ class PlaybackUpdate(Message):
 	duration: int = None # The duration in seconds
 	speed: float = None # The playback speed factor
 	itemIndex: int = None # The playlist item index currently being played on receiver
+	
+	@property
+	def state(self) -> PlaybackState:
+		return self._state
+	
+	@state.setter
+	def state(self, value):
+		self._state = PlaybackState(value)
 
 	def serialize(self):
 		res = {
@@ -106,7 +124,6 @@ class PlaybackUpdate(Message):
 		if d:=self.duration: res["duration"] = d
 		if s:=self.speed: res["speed"] = s
 		if i:=self.itemIndex: res["itemIndex"] = i
-
 		return json.dumps(res).encode(encoding="utf-8")
 
 
@@ -173,7 +190,6 @@ class Initial(Message):
 				res["playData"]: json.loads(self.playData.serialize().decode())
 			elif t == dict:
 				res["playData"] = pd
-
 		return json.dumps(res).encode(encoding="utf-8")
 
 
