@@ -1,20 +1,14 @@
 from dataclasses import dataclass
 import struct
 from enum import Enum
-from typing import Optional, Any
+from typing import Optional
 import json
-from .event import Event
+from .event import EventSub, Event
+from .media import MetadataType
 
 import logging
 
 l = logging.getLogger(__name__)
-
-
-@dataclass
-class MetadataType:
-	title: str = None
-	thumbnailUrl: str = None
-	custom: Any = None
 
 class PlaybackState(Enum):
 	idle: int = 0
@@ -219,21 +213,39 @@ class SetPlaylistItem(Message):
 class Pause(Message):
 	...
 
+
 @dataclass
 class Stop(Message):
 	...
+
 
 @dataclass
 class Resume(Message):
 	...
 
+
 @dataclass
 class Ping(Message):
 	...
 
+
 @dataclass
 class Pong(Message):
 	...
+
+
+@dataclass
+class SubscribeEvent(Message):
+	event: EventSub
+
+	def serialize(self) -> bytes:
+		return json.dumps({"event": self.event.__dict__}).encode(encoding="utf-8")
+
+
+@dataclass
+class UnsubscribeEvent(SubscribeEvent):
+	...
+
 
 @dataclass
 class EventM(Message):

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 from .event_type import EventType
+from .media import MediaItem
 import logging
 
 l = logging.getLogger(__name__)
@@ -15,7 +16,7 @@ class KeyNames(Enum):
 
 
 @dataclass
-class Event:
+class EventSub:
 	@property
 	def type(self) -> EventType:
 		from .utils import EventToType
@@ -24,25 +25,42 @@ class Event:
 	
 
 @dataclass
-class MediaItemStart(Event):
+class MediaItemStart(EventSub):
 	...
 
 
 @dataclass
-class MediaItemEnd(Event):
+class MediaItemEnd(EventSub):
 	...
 
 
 @dataclass
-class MediaItemChange(Event):
+class MediaItemChange(EventSub):
 	...
 
 
 @dataclass
-class KeyDown(Event):
+class KeyDown(EventSub):
 	...
 
 
 @dataclass
-class KeyUp(Event):
+class KeyUp(EventSub):
 	...
+
+
+@dataclass
+class Event:
+	type: EventType
+
+
+@dataclass
+class MediaItem(Event):
+	item: MediaItem
+
+
+@dataclass
+class Key(Event):
+	key: str
+	repeat: bool
+	handled: bool
