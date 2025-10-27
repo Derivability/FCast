@@ -21,6 +21,8 @@ OpcodeToMessage = {
 	Opcode.initial: Initial,
     Opcode.play_update: PlayUpdate,
     Opcode.set_playlist_item: SetPlaylistItem,
+    Opcode.subscribe_event: SubscribeEvent,
+    Opcode.unsubscribe_event: UnsubscribeEvent,
     Opcode.event: EventM
 }
 
