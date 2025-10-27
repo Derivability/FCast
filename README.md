@@ -1,8 +1,9 @@
 # Description
-	This is best-effort python implementation of the FCast protocol by FUTO: https://gitlab.futo.org/videostreaming/fcast
-	**I'm not affiliated nor endorsed by FUTO**
-	
-	Currently only protocol version 3 is targeted
+This is best-effort python implementation of the FCast protocol by FUTO: https://gitlab.futo.org/videostreaming/fcast
+
+**I'm not affiliated nor endorsed by FUTO**
+
+Currently only protocol version 3 is targeted
 
 # Installation
 
@@ -11,7 +12,8 @@
 # Usage
 
 Send message:
-```import fcast
+```
+import fcast
 
 fc = fcast.FCastSession(<IP/Host>)
 fc.connect()
@@ -19,7 +21,8 @@ fc.send(fcast.message.Ping())
 ```
 
 Handle received messages:
-```import fcast
+```
+import fcast
 
 def callback(msg: fcast.message.Message):
 	<do stuff>
@@ -31,7 +34,8 @@ fc.receive()
 ```
 
 Run receive loop in a separate thread:
-```import fcast
+```
+import fcast
 from threading import Thread
 
 def callback(msg: fcast.message.Message):
