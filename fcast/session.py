@@ -64,20 +64,19 @@ class FCastSession:
 
 	def receive(self):
 		while self.connected:
-			self.lock.acquire()
-			try:
-				msg = self._recv()
-			except TypeError as e:
-				l.error(e)
-				continue
-			if t:=type(msg) == Ping:
-				self.send(Pong())
-			elif t == Version:
-				self.send(Version(3))
-			elif t == Initial:
-				self.send(Initial())
-			self._notify(msg)
-			self.lock.release()
+			with self.lock:
+				try:
+					msg = self._recv()
+				except TypeError as e:
+					l.error(e)
+					continue
+				if t:=type(msg) == PingMessage:
+					self.send(PongMessage())
+				elif t == VersionMessage:
+					self.send(VersionMessage(3))
+				elif t == InitialMessage:
+					self.send(InitialMessage())
+				self._notify(msg)
 
 
 class FCastSessionAsync(FCastSession):
@@ -116,17 +115,16 @@ class FCastSessionAsync(FCastSession):
 
 	async def receive(self):
 		while self.connected:
-			await self.lock.acquire()
-			try:
-				msg = await self._recv()
-			except TypeError as e:
-				l.error(e)
-				continue
-			if t:=type(msg) == Ping:
-				await self.send(Pong())
-			elif t == Version:
-				await self.send(Version(3))
-			elif t == Initial:
-				await self.send(Initial())
-			self._notify(msg)
-			self.lock.release()
+			async with self.lock:
+				try:
+					msg = await self._recv()
+				except TypeError as e:
+					l.error(e)
+					continue
+				if t:=type(msg) == PingMessage:
+					await self.send(PongMessage())
+				elif t == VersionMessage:
+					await self.send(VersionMessage(3))
+				elif t == InitialMessage:
+					await self.send(InitialMessage())
+				self._notify(msg)

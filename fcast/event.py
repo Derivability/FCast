@@ -17,7 +17,7 @@ class KeyNames(Enum):
 
 
 @dataclass
-class EventSub:
+class EventSubscribeObject:
 	@property
 	def type(self) -> EventType:
 		from .utils import EventSubToType
@@ -26,32 +26,32 @@ class EventSub:
 	
 
 @dataclass
-class MediaItemStart(EventSub):
+class MediaItemStart(EventSubscribeObject):
 	...
 
 
 @dataclass
-class MediaItemEnd(EventSub):
+class MediaItemEnd(EventSubscribeObject):
 	...
 
 
 @dataclass
-class MediaItemChange(EventSub):
+class MediaItemChange(EventSubscribeObject):
 	...
 
 
 @dataclass
-class KeyDown(EventSub):
+class KeyDown(EventSubscribeObject):
 	...
 
 
 @dataclass
-class KeyUp(EventSub):
+class KeyUp(EventSubscribeObject):
 	...
 
 
 @dataclass
-class Event:
+class EventObject:
 	type: EventType
 	@property
 	def json(self) -> dict:
@@ -59,7 +59,7 @@ class Event:
 
 
 @dataclass
-class MediaItemE(Event):
+class MediaItemEvent(EventObject):
 	item: MediaItem
 	
 	@property
@@ -84,7 +84,7 @@ class MediaItemE(Event):
 
 
 @dataclass
-class Key(Event):
+class KeyEvent(EventObject):
 	key: str
 	repeat: bool
 	handled: bool

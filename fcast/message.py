@@ -3,7 +3,7 @@ import struct
 from enum import Enum
 from typing import Optional
 import json
-from .event import EventSub, Event
+from .event import EventSubscribeObject, EventObject
 from .media import MetadataType
 
 import logging
@@ -51,14 +51,14 @@ class Message:
 
 
 @dataclass
-class Play(Message):
-	container: str #The MIME type (video/mp4)
-	url: Optional[str] = None #The URL to load (optional)
-	content: Optional[str] = None #The content to load (i.e. a DASH manifest, optional)
-	time: float = 0 #The time to start playing in seconds
+class PlayMessage(Message):
+	container: str # The MIME type (video/mp4)
+	url: Optional[str] = None # The URL to load (optional)
+	content: Optional[str] = None # The content to load (i.e. a DASH manifest, optional)
+	time: float = 0 # The time to start playing in seconds
 	volume: float = None # The desired volume (0-1)
-	speed: float = 1.0 #The factor to multiply playback speed by (defaults to 1.0)
-	headers: Optional[dict] = None #HTTP request headers to add to the play request Map<string, string>
+	speed: float = 1.0 # The factor to multiply playback speed by (defaults to 1.0)
+	headers: Optional[dict] = None # HTTP request headers to add to the play request Map<string, string>
 	metadata: MetadataType = None
 
 	@property
@@ -77,8 +77,7 @@ class Play(Message):
 		elif isinstance(value, property):
 			self._metadata = None
 		else:
-			raise KeyError(f"Invalid value provided for metadata: {value}")
-		
+			raise KeyError(f"Invalid value provided for metadata: {value}")	
 
 	def serialize(self):
 		res = {
@@ -94,16 +93,16 @@ class Play(Message):
 
 
 @dataclass
-class Seek(Message):
-	time: float = 0 #The time to seek to in seconds
+class SeekMessage(Message):
+	time: float = 0 # The time to seek to in seconds
 
 	def serialize(self):
 		return json.dumps({"time": self.time}).encode(encoding="utf-8")
 
 
 @dataclass
-class PlaybackUpdate(Message):
-	generationTime: float #The time the packet was generated (unix time milliseconds)
+class PlaybackUpdateMessage(Message):
+	generationTime: float # The time the packet was generated (unix time milliseconds)
 	state: PlaybackState # The playback state
 	time: int = None # The current time playing in seconds
 	duration: int = None # The duration in seconds
@@ -131,8 +130,8 @@ class PlaybackUpdate(Message):
 
 
 @dataclass
-class VolumeUpdate(Message):
-	generationTime: float #The time the packet was generated (unix time milliseconds)
+class VolumeUpdateMessage(Message):
+	generationTime: float # The time the packet was generated (unix time milliseconds)
 	volume: float # The current volume (0-1)
 
 	def serialize(self):
@@ -144,7 +143,7 @@ class VolumeUpdate(Message):
 
 
 @dataclass
-class SetVolume(Message):
+class SetVolumeMessage(Message):
 	volume: float = 0 # The desired volume (0-1)
 
 	def serialize(self):
@@ -152,7 +151,7 @@ class SetVolume(Message):
 
 
 @dataclass
-class PlaybackError(Message):
+class PlaybackErrorMessage(Message):
 	message: str
 
 	def serialize(self):
@@ -160,7 +159,7 @@ class PlaybackError(Message):
 
 
 @dataclass
-class SetSpeed(Message):
+class SetSpeedMessage(Message):
 	speed: float = 0 # The factor to multiply playback speed by.
 
 	def serialize(self):
@@ -168,7 +167,7 @@ class SetSpeed(Message):
 
 
 @dataclass
-class Version(Message):
+class VersionMessage(Message):
 	version: int = 3 # Protocol version number (integer)
 
 	def serialize(self):
@@ -176,11 +175,11 @@ class Version(Message):
 
 
 @dataclass
-class Initial(Message):
+class InitialMessage(Message):
 	displayName: str = None
 	appName: str = None
 	appVersion: str = None
-	playData: Play = None
+	playData: PlayMessage = None
 
 	def serialize(self):
 		res = {
@@ -189,7 +188,7 @@ class Initial(Message):
 			"appVersion": self.appVersion,
 		}
 		if pd:=self.playData:
-			if t:=type(pd) == Play:
+			if t:=type(pd) == PlayMessage:
 				res["playData"]: json.loads(self.playData.serialize().decode())
 			elif t == dict:
 				res["playData"] = pd
@@ -197,9 +196,9 @@ class Initial(Message):
 
 
 @dataclass
-class PlayUpdate(Message):
-	generationTime: float #The time the packet was generated (unix time milliseconds)
-	playData: Play = None
+class PlayUpdateMessage(Message):
+	generationTime: float # The time the packet was generated (unix time milliseconds)
+	playData: PlayMessage = None
 
 	def serialize(self):
 		res = {
@@ -210,7 +209,7 @@ class PlayUpdate(Message):
 	
 
 @dataclass
-class SetPlaylistItem(Message):
+class SetPlaylistItemMessage(Message):
 	itemIndex: int # The playlist item index to play on receiver
 
 	def serialize(self):
@@ -218,60 +217,60 @@ class SetPlaylistItem(Message):
 
 
 @dataclass
-class Pause(Message):
+class PauseMessage(Message):
 	...
 
 
 @dataclass
-class Stop(Message):
+class StopMessage(Message):
 	...
 
 
 @dataclass
-class Resume(Message):
+class ResumeMessage(Message):
 	...
 
 
 @dataclass
-class Ping(Message):
+class PingMessage(Message):
 	...
 
 
 @dataclass
-class Pong(Message):
+class PongMessage(Message):
 	...
 
 
 @dataclass
-class SubscribeEvent(Message):
-	event: EventSub
+class SubscribeEventMessage(Message):
+	event: EventSubscribeObject
 
 	def serialize(self) -> bytes:
 		return json.dumps({"event": self.event.__dict__}).encode(encoding="utf-8")
 
 
 @dataclass
-class UnsubscribeEvent(SubscribeEvent):
+class UnsubscribeEvent(SubscribeEventMessage):
 	...
 
 
 @dataclass
-class EventM(Message):
-	generationTime: float #The time the packet was generated (unix time milliseconds)
-	event: Event
+class EventMessage(Message):
+	generationTime: float # The time the packet was generated (unix time milliseconds)
+	event: EventObject
 
 	@property
-	def event(self) -> Event:
+	def event(self) -> EventObject:
 		return self._event
 	
 	@event.setter
-	def event(self, value: dict|Event):
+	def event(self, value: dict|EventObject):
 		if type(value) == dict:
 			from .utils import TypeToEvent
 			etype = value["type"]
 			E = TypeToEvent[etype]
 			self._event = E(**value)
-		elif isinstance(value, Event):
+		elif isinstance(value, EventObject):
 			self._event = value
 		else:
 			raise KeyError(f"Invalid value provided for event: {value}")

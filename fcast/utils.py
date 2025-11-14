@@ -5,25 +5,25 @@ from .event import *
 
 
 OpcodeToMessage = {
-    Opcode.play: Play,
-    Opcode.pause: Pause,
-    Opcode.resume: Resume,
-    Opcode.stop: Stop,
-    Opcode.seek: Seek,
-    Opcode.playback_update: PlaybackUpdate,
-    Opcode.volume_update: VolumeUpdate,
-    Opcode.set_volume: SetVolume,
-    Opcode.playback_error: PlaybackError,
-    Opcode.set_speed: SetSpeed,
-	Opcode.version: Version,
-    Opcode.ping: Ping,
-    Opcode.pong: Pong,
-	Opcode.initial: Initial,
-    Opcode.play_update: PlayUpdate,
-    Opcode.set_playlist_item: SetPlaylistItem,
-    Opcode.subscribe_event: SubscribeEvent,
+    Opcode.play: PlayMessage,
+    Opcode.pause: PauseMessage,
+    Opcode.resume: ResumeMessage,
+    Opcode.stop: StopMessage,
+    Opcode.seek: SeekMessage,
+    Opcode.playback_update: PlaybackUpdateMessage,
+    Opcode.volume_update: VolumeUpdateMessage,
+    Opcode.set_volume: SetVolumeMessage,
+    Opcode.playback_error: PlaybackErrorMessage,
+    Opcode.set_speed: SetSpeedMessage,
+	Opcode.version: VersionMessage,
+    Opcode.ping: PingMessage,
+    Opcode.pong: PongMessage,
+	Opcode.initial: InitialMessage,
+    Opcode.play_update: PlayUpdateMessage,
+    Opcode.set_playlist_item: SetPlaylistItemMessage,
+    Opcode.subscribe_event: SubscribeEventMessage,
     Opcode.unsubscribe_event: UnsubscribeEvent,
-    Opcode.event: EventM
+    Opcode.event: EventMessage
 }
 
 MessageToOpcode = {v:k for k,v in OpcodeToMessage.items()}
@@ -41,9 +41,9 @@ EventSubToType = {v:k for k,v in TypeToEventSub.items()}
 
 #Leap of faith
 TypeToEvent = {
-    EventType.MediaItemStart: MediaItemE,
-    EventType.MediaItemEnd: MediaItemE,
-    EventType.MediaItemChange: MediaItemE,
-    EventType.KeyDown: Key,
-    EventType.KeyUp: Key,
+    EventType.MediaItemStart: MediaItemEvent,
+    EventType.MediaItemEnd: MediaItemEvent,
+    EventType.MediaItemChange: MediaItemEvent,
+    EventType.KeyDown: KeyEvent,
+    EventType.KeyUp: KeyEvent,
 }
