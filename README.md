@@ -29,7 +29,7 @@ def callback(msg: fcast.message.Message):
 
 fc = fcast.FCastSession(<IP/Host>)
 fc.connect()
-fc.subscribe((fcast.message.Ping, callback))
+fc.subscribe((fcast.message.PingMessage, callback))
 fc.receive()	
 ```
 
@@ -43,7 +43,7 @@ def callback(msg: fcast.message.Message):
 
 fc = fcast.FCastSession(<IP/Host>)
 fc.connect()
-fc.subscribe((fcast.message.Ping,callback))
+fc.subscribe((fcast.message.PingMessage,callback))
 recv_thread = Thread(target=fc.receive)
 recv_thread.start()
 <do other stuff>
